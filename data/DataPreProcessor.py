@@ -68,7 +68,7 @@ def ugly_pre_processing():
             with open(csv_file, 'w') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=act_csv_columns)
                 writer.writeheader()
-                for data in dict_data[:-2]:
+                for data in dict_data[:-1]:
                     writer.writerow(data)
         except IOError:
             print("I/O error") 
