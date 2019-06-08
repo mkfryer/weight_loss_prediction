@@ -37,17 +37,17 @@ def ugly_pre_processing():
 
             row = np.array(row)
 
+
             if last_date == '' or last_date == row[0]:
                 c += 1
                 average_day_data[:17] = average_day_data[:17] + row[3:-1].astype(float)
 
             else: 
-                average_day_data /= c
-                day = {"date" : row[0], "weight": 0}
+                average_day_data = average_day_data / c
+                day = {"date" : last_date, "weight": 0}
                 for i, x in enumerate(average_day_data[:17]):
                     day[csv_columns[i+3]] = x
-                
-                c = 0
+                c = 1
                 dict_data.append(day)
                 average_day_data = row[3:-1].astype(float)
 
