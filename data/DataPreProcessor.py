@@ -36,18 +36,19 @@ def ugly_pre_processing():
                 continue
 
             row = np.array(row)
-
+            if row[1] != "Snacks":
+                continue
 
             if last_date == '' or last_date == row[0]:
-                c += 1
+                #c += 1
                 average_day_data[:17] = average_day_data[:17] + row[3:-1].astype(float)
 
             else: 
-                average_day_data = average_day_data / c
+                average_day_data = average_day_data #/ c
                 day = {"date" : last_date, "weight": 0}
                 for i, x in enumerate(average_day_data[:17]):
                     day[csv_columns[i+3]] = x
-                c = 1
+                #c = 1
                 dict_data.append(day)
                 average_day_data = row[3:-1].astype(float)
 
@@ -63,7 +64,7 @@ def ugly_pre_processing():
                 row["weight"] = last_weight + np.random.uniform(-2,0,2)[0]
 
 
-        csv_file = "nutrition_summary_day_average.csv"
+        csv_file = "nutrition_summary_snacks.csv"
         try:
             with open(csv_file, 'w') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=act_csv_columns)
@@ -73,8 +74,19 @@ def ugly_pre_processing():
         except IOError:
             print("I/O error") 
 
-        
+# def ugly_pre_processing():
+#     m = {}
+#     with open('nurtition_summary_day_average.csv', newline='') as csvfile:
+#         csvReader = csv.reader(csvfile)
 
+#         i = -1
+#         for row in csvReader:
+#             i += 1
+#             if i == 0:
+#                 continue
+#             d = datetime.strptime(row[0], '%Y-%m-%d')
+#             d = d - timedelta(days=1)
+#             m[d.strftime('%Y-%m-%d')] = float(row[1])
 
 if __name__ == "__main__":
     ugly_pre_processing()
