@@ -55,7 +55,7 @@ INDEX KEY
 """
 def predict():
 
-    mask = [1, 5, 10, 7, 11, 14, 18]
+    mask = [5, 10, 7, 11, 14, 18]
     data = load("data/nutrition_summary_day_average.csv", mask).astype(float)
     # data[0, -1] += "Yes"
     # mask1 = np.where(data[:, -1] == "Yes")
@@ -67,56 +67,28 @@ def predict():
 
     m, n = data.shape
     t = int(.8 * m)
-    # train_data = data[:t, :]
-    # test_data = data[t:, :]
-    # train_data = np.vstack((data[:23, :], data[31:, :]))
-    # test_data = data[23:30]
+    train_data = data[:t, :]
+    test_data = data[t:, :]
+    # train_data = np.vstack((data[:22, :], data[31:, :]))
+    # test_data = data[22:31]
+    clf = tree.DecisionTreeRegressor()
+    clf = clf.fit(train_data[:, :-1], train_data[:, -1])
 
-    folds = [
-            [data[15:, :], data[:15, :]], 
-            [np.vstack((data[:15, :], data[30:, :])), data[15:30, :]], 
-            [np.vstack((data[:30, :], data[40:, :])), data[30:40, :]], 
-            [data[:40, :], data[40:51, :]]
-            ]
-    intervals = [
-        [0, 15],
-        [15, 30],
-        [30, 40],
-        [40, 52]
-    ]
-    # c = 0
-    # for i in range(0, m-t):
-    #     print(clf.predict([test_data[i, :-1]])[0], test_data[i, -1])
-
-    #     if clf.predict([test_data[i, :-1]])[0] == test_data[i, -1]:
-    #         c += 1
-    # print("accuracy :", c/7)
-    
-    # dot_data = tree.export_graphviz(clf, out_file=None) 
-    # graph = graphviz.Source(dot_data) 
-    # dot_data = tree.export_graphviz(clf, out_file=None, 
-    #                       feature_names=iris.feature_names,  
-    #                       class_names=iris.target_names,  
-    #                       filled=True, rounded=True,  
-    #                       special_characters=True)  
-    # graph = graphviz.Source(dot_data)  
-
-    Y_hat = []
-    for i, fold in enumerate(folds):
-        X = range(intervals[i][0], intervals[i][1])
-        train_data, testing_data = fold
-        clf = tree.DecisionTreeRegressor()
-        clf = clf.fit(train_data[:, :-1], train_data[:, -1])
-        for i in X:
-            print(i)
-            Y_hat.append(clf.predict([data[i, :-1]])[0])
-            print(Y_hat)
-        # Y = [clf.predict([data[i, :-1]])[0] for i in X]
     X = range(0, m)
-    print(m, len(Y_hat))
-    plt.plot(X, Y_hat, label = "prediction", )
+    Y = [clf.predict([data[i, :-1]])[0] for i in X]
+
+    loss_prediction = []
+    gain_prediction = []
+    # for i in range(len(Y) - 1):
+    #     if 
+
+
+    plt.plot(X, Y, label = "prediction")
     plt.plot(X, data[:, -1], label = "true")
     plt.legend()
+    plt.xlabel("Days")
+    plt.ylabel("Y")
+    plt.title("Trend Prediction")
     plt.plot()
     plt.show()
 
